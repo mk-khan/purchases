@@ -99,9 +99,9 @@ $(".search.panel input").keydown(function(e) {
 window.fetchUnits();
 window.fetchProducts();
 
-setTimeout(function() {
-    window.fetchProducts();
-}, 120000);
+//setTimeout(function() {
+//    window.fetchProducts();
+//}, 120000);
 
 function removeItem(el) {
     const confirmed = confirm(window.translate("AreYouSure"));
@@ -326,7 +326,8 @@ function initializeClickAndAction() {
             buttonEl.toggle();
         });
 
-        item.appendTo(targetEl);
+        //item.appendTo(targetEl);
+        item.prepend(targetEl);
         quantityInput.trigger("keyup");
         window.updateTotal();
     });
@@ -573,13 +574,19 @@ function getTaxRate() {
     };
 
     if (window.getQueryStringByName("type") === "nontaxable") {
+        $("#SalesTaxRateHidden").val(0);
         return;
     };
 
     const ajax = request();
 
     ajax.success(function(response) {
-        const salesTaxRate = window.parseFloat(response[0].SalesTaxRate);
+        var taxRate = 0;
+        if (response != null && response.length > 0) {
+            taxRate = window.parseFloat(response[0].SalesTaxRate);
+
+        }
+        const salesTaxRate = taxRate || 0;
         $("#SalesTaxRateHidden").val(salesTaxRate);
     });
 };

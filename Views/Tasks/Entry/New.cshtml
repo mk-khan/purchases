@@ -51,8 +51,8 @@
                     return model;
                 };
 
-                const valueDate = $("#ValueDateInputDate").datepicker("getDate");
-                const bookDate = $("#BookDateInputDate").datepicker("getDate");
+                const valueDate = getNewUTCDateOnly("#ValueDateInputDate");//$("#ValueDateInputDate").datepicker("getDate");
+                const bookDate = getNewUTCDateOnly("#BookDateInputDate");//$("#BookDateInputDate").datepicker("getDate");
                 const costCenterId = $("#CostCenterSelect").val();
                 const referenceNumber = $("#ReferenceNumberInputText").val();
                 const statementReference = $("#StatementReferenceInputText").val();

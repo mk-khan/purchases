@@ -191,7 +191,7 @@
         const itemId = parseInt($("#ItemIdSelect").val() || 0);
         const batchNumber = $("#BatchNumberInput").val();
         const serialNumber = $("#SerialNumberInput").val();
-        const expiryDate = $("#ExpiryDateInput").datepicker("getDate");
+        const expiryDate = getNewUTCDateOnly("#ExpiryDateInput");//$("#ExpiryDateInput").datepicker("getDate");
 
         if (!batchNumber) {
             window.makeDirty($("#BatchNumberInput"));
