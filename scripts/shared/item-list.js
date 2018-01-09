@@ -1,4 +1,4 @@
-﻿$("#PurchaseItems .item").on("contextmenu", function(e) {
+﻿$("#PurchaseItems .item").on("contextmenu", function (e) {
     e.preventDefault();
     const el = $(this);
     const defaultMenu = el.find(".info.block, .number.block");
@@ -51,7 +51,7 @@ function fetchUnits() {
 
     const ajax = request();
 
-    ajax.success(function(response) {
+    ajax.success(function (response) {
         window.metaUnits = response;
     });
 };
@@ -64,13 +64,13 @@ function fetchProducts() {
 
     const ajax = request();
 
-    ajax.success(function(response) {
+    ajax.success(function (response) {
         window.products = response;
         $(document).trigger("itemFetched");
     });
 };
 
-$(".search.panel input").keyup(function() {
+$(".search.panel input").keyup(function () {
     const el = $(this);
     const term = el.val();
 
@@ -86,7 +86,7 @@ $(".search.panel input").keyup(function() {
     initializeClickAndAction();
 });
 
-$(".search.panel input").keydown(function(e) {
+$(".search.panel input").keydown(function (e) {
     if (e.keyCode === 13) {
         const item = $(".item.list .item:first");
 
@@ -96,8 +96,14 @@ $(".search.panel input").keydown(function(e) {
     };
 });
 
+$("#RefreshItemButton").off("click").on("click", function () {
+    window.fetchUnits();
+    window.fetchProducts();
+});
+
 window.fetchUnits();
 window.fetchProducts();
+
 
 //setTimeout(function() {
 //    window.fetchProducts();
@@ -116,7 +122,7 @@ function removeItem(el) {
     window.updateTotal();
 };
 
-$(document).on("itemFetched", function() {
+$(document).on("itemFetched", function () {
     $("#POSDimmer").removeClass("active");
     displayProducts();
     displayCategories();
@@ -125,7 +131,7 @@ $(document).on("itemFetched", function() {
 
 
 function initializeClickAndAction() {
-    $("#POSItemList .item").off("click").on("click", function() {
+    $("#POSItemList .item").off("click").on("click", function () {
         var el = $(this);
         var costPrice = el.attr("data-cost-price");
         var photo = el.attr("data-photo") || "";
@@ -191,11 +197,11 @@ function initializeClickAndAction() {
             el.html("");
 
             const units = window.Enumerable.From(window.metaUnits)
-                .Where(function(x) {
+                .Where(function (x) {
                     return validUnits.indexOf(x.UnitId.toString()) > -1;
                 }).ToArray();
 
-            $.each(units, function() {
+            $.each(units, function () {
                 const unit = this;
 
                 const option = $("<option/ >");
@@ -241,13 +247,13 @@ function initializeClickAndAction() {
             window.updateTotal();
         };
 
-        quantityInput.on("keyup", function() {
+        quantityInput.on("keyup", function () {
             const el = $(this);
             const parentInfo = el.parent().parent();
             updateItemTotal(parentInfo);
         });
 
-        discountInput.on("keyup", function() {
+        discountInput.on("keyup", function () {
             const el = $(this);
 
             const rate = window.parseFloat2(el.val());
@@ -260,13 +266,13 @@ function initializeClickAndAction() {
             updateItemTotal(parentInfo);
         });
 
-        priceInput.on("keyup", function() {
+        priceInput.on("keyup", function () {
             const el = $(this);
             const parentInfo = el.parent().parent();
             updateItemTotal(parentInfo);
         });
 
-        discountInput.on("blur", function() {
+        discountInput.on("blur", function () {
             const el = $(this);
             const value = el.val();
 
@@ -300,23 +306,23 @@ function initializeClickAndAction() {
             $(".pos.purchase.segment").addClass("loading");
             const ajax = request(itemId, supplierId, unitId);
 
-            ajax.success(function(response) {
+            ajax.success(function (response) {
                 $(".pos.purchase.segment").removeClass("loading");
                 const priceInput = el.parent().parent().parent().find("input.price");
                 priceInput.val(response).trigger("keyup");
             });
 
-            ajax.fail(function(xhr) {
+            ajax.fail(function (xhr) {
                 $(".pos.purchase.segment").removeClass("loading");
                 window.logAjaxErrorMessage(xhr);
             });
         };
 
-        unitSelect.on("change", function() {
+        unitSelect.on("change", function () {
             getPrice($(this));
         });
 
-        item.on("contextmenu", function(e) {
+        item.on("contextmenu", function (e) {
             e.preventDefault();
             const el = $(this);
             const inputEl = el.find(".number.block input");
@@ -327,16 +333,16 @@ function initializeClickAndAction() {
         });
 
         //item.appendTo(targetEl);
-        item.prepend(targetEl);
+        item.prependTo(targetEl);
         quantityInput.trigger("keyup");
         window.updateTotal();
     });
 };
 
 $("#SummaryItems div.discount .money input, " +
-    "#ReceiptSummary div.tender .money input, #DiscountInputText").keyup(function() {
-    window.updateTotal();
-});
+    "#ReceiptSummary div.tender .money input, #DiscountInputText").keyup(function () {
+        window.updateTotal();
+    });
 
 function updateTotal() {
     const candidates = $("#PurchaseItems div.item");
@@ -373,7 +379,7 @@ function updateTotal() {
 
     //Discount applies before tax
     taxableTotal -= discount;
-    const tax = taxableTotal * (taxRate/100);
+    const tax = taxableTotal * (taxRate / 100);
     totalPrice = taxableTotal + tax + nonTaxableTotal;
 
     totalPrice = window.round(totalPrice, 2);
@@ -384,23 +390,23 @@ function updateTotal() {
 };
 
 function displayCategories() {
-    const categories = window.Enumerable.From(products).Distinct(function(x) { return x.ItemGroupName })
-        .Select(function(x) { return x.ItemGroupName }).ToArray();
+    const categories = window.Enumerable.From(products).Distinct(function (x) { return x.ItemGroupName })
+        .Select(function (x) { return x.ItemGroupName }).ToArray();
     var targetEl = $(".cat.filter");
     $(".category.list").find(".category").remove();
 
-    targetEl.off("click").on("click", function() {
+    targetEl.off("click").on("click", function () {
         displayProducts();
         $(".category").removeClass("selected");
         targetEl.hide();
         initializeClickAndAction();
     });
 
-    $.each(categories, function() {
+    $.each(categories, function () {
         const category = $("<div class='category' />");
         category.html(this);
 
-        category.off("click").on("click", function() {
+        category.off("click").on("click", function () {
             $(".search.panel input").val("");
             const el = $(this);
             const name = el.text();
@@ -433,30 +439,30 @@ function displayProducts(category, searchQuery) {
         if (category && searchQuery) {
             groupItems = window.Enumerable
                 .From(products)
-                .Where(function(x) {
+                .Where(function (x) {
                     return x.ItemGroupName.toLowerCase() === category.toString().toLowerCase()
                         && x.ItemName.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
                 }).ToArray();
         } else if (!category && searchQuery) {
             groupItems = window.Enumerable
                 .From(products)
-                .Where(function(x) {
+                .Where(function (x) {
                     return x.ItemName.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
                 }).ToArray();
         } else {
             groupItems = window.Enumerable
                 .From(products)
-                .Where(function(x) {
+                .Where(function (x) {
                     return x.ItemGroupName.toLowerCase() === category.toString().toLowerCase();
                 }).ToArray();
         };
     };
 
-    groupItems = window.Enumerable.From(groupItems).OrderBy(function(x) { return x.ItemId }).ToArray();
+    groupItems = window.Enumerable.From(groupItems).OrderBy(function (x) { return x.ItemId }).ToArray();
 
     target.html("").hide();
 
-    $.each(groupItems, function() {
+    $.each(groupItems, function () {
         const product = this;
 
         var costPrice = product.CostPrice;
@@ -523,9 +529,9 @@ function displayProducts(category, searchQuery) {
 $("#ClearScreenButton")
     .unbind("click")
     .bind("click",
-        function() {
-            clearScreen();
-        });
+    function () {
+        clearScreen();
+    });
 
 function clearScreen() {
     $("#PurchaseItems").html("");
@@ -559,7 +565,7 @@ loadSuppliers();
 loadCostCenters();
 loadShippers();
 
-setTimeout(function() {
+setTimeout(function () {
     window.setRegionalFormat();
 }, 100);
 
@@ -580,7 +586,7 @@ function getTaxRate() {
 
     const ajax = request();
 
-    ajax.success(function(response) {
+    ajax.success(function (response) {
         var taxRate = 0;
         if (response != null && response.length > 0) {
             taxRate = window.parseFloat(response[0].SalesTaxRate);
