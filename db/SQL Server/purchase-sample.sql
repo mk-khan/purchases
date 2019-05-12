@@ -1,4 +1,6 @@
 ﻿-->-->-- src/Frapid.Web/Areas/MixERP.Purchases/db/SQL Server/2.x/2.0/src/99.sample-data/sample.sample.sql --<--<--
+SET NOCOUNT ON;
+
 DECLARE @user_id					integer;
 DECLARE @login_id					bigint;
 DECLARE @cost_center_id				integer;
@@ -17,6 +19,15 @@ DECLARE @store_id					integer								= inventory.get_store_id_by_store_name('Sto
 SELECT TOP 1 @user_id = account.users.user_id
 FROM account.users
 WHERE account.users.role_id = 9999;
+
+IF(@user_id IS NULL)
+BEGIN
+	INSERT INTO account.users(email, password, office_id, role_id, name, phone)
+	SELECT 'purchase.test@mixerp.org', NULL, 1, 9999, 'Purchase Test', '0';
+
+	SET @user_id = SCOPE_IDENTITY();
+END;
+
 
 INSERT INTO account.logins(user_id, office_id, browser, ip_address, culture)
 SELECT @user_id, @office_id, '', '', '';
@@ -56,3 +67,8 @@ EXECUTE purchase.post_purchase
 	@details,
 	0,
 	@transaction_master_id = @transaction_master_id output;
+
+
+UPDATE finance.transaction_master
+SET verified_by_user_id = 1;
+
