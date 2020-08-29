@@ -20,6 +20,12 @@ BEGIN
 	WHERE account.users.role_id = 9999
 	LIMIT 1;
 
+    IF(_user_id IS NULL) THEN
+        INSERT INTO account.users(email, password, office_id, role_id, name, phone)
+        SELECT 'purchase.test@mixerp.org', NULL, 1, 9999, 'Purchase Test', '0'
+        RETURNING user_id INTO _user_id;
+    END IF;
+
     INSERT INTO account.logins(user_id, office_id, browser, ip_address, culture)
     SELECT _user_id, _office_id, '', '', '';
 
